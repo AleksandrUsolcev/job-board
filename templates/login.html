@@ -8,7 +8,7 @@
     <div class="col-3">
       <label for="email"></label>
       <div class="mb-3">
-        <input class="form-control" type="text" name="email" value="" required>
+        <input class="form-control" type="text" name="email" value="{% print get_flashed_messages(category_filter=['email'])[0] %}" required>
         <div class="form-text">email</div>
       </div>
       <div class="mb-3">
@@ -16,7 +16,9 @@
         <div class="form-text">password</div>
       </div>
       {% for category, message in get_flashed_messages(True) %}
-        <p class="alert alert-danger {{ category }}">{{ message }}</p>
+        {% if category == 'error' %}
+          <p class="alert alert-danger {{ category }}">{{ message }}</p>
+        {% endif %}
       {% endfor %}
       <button class="btn btn-primary" type="sumbit">Вход</button>
     </div>
