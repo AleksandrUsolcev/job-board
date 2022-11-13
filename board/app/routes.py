@@ -1,19 +1,12 @@
-from dotenv import load_dotenv
-from flask import (Flask, abort, flash, redirect, render_template, request,
-                   session, url_for)
+from app import app
+from flask import (abort, flash, redirect, render_template, request, session,
+                   url_for)
 
-load_dotenv()
-
-app = Flask(__name__)
-
-app.config['SECRET_KEY'] = 'change-me'
+from .models import User
 
 
-@app.errorhandler(Exception)
-def error_page(error: Exception):
-    error_list = [404, 401]
-    if error.code not in error_list:
-        return error
+@app.errorhandler(404)
+def error_404(error):
     context = {
         'error': error.description,
         'error_code': error.code,
@@ -34,6 +27,7 @@ def index():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    session.permanent = True
     test_password = '12345'
     test_email = 'admin@admin.admin'
     if request.method == 'POST':
@@ -42,21 +36,21 @@ def login():
             flash('Неверный пароль', category='error')
     context = {}
     if 'email' in session:
-        return redirect(url_for('index'))
+        return redirect(url_for('index'), 301)
     elif (
         request.method == 'POST'
         and request.form.get('email') == test_email
         and request.form.get('password') == test_password
     ):
         session['email'] = test_email
-        return redirect(url_for('index'))
+        return redirect(url_for('index'), 301)
     return render_template('login.html', **context)
 
 
 @app.route('/logout')
 def logout():
     session.clear()
-    return redirect(url_for('index'))
+    return redirect(url_for('index'), 301)
 
 
 @app.route('/job/<category>/<int:id>')
@@ -69,7 +63,3 @@ def vacancy_detail(category, id):
         'category': category
     }
     return render_template('vacancy_detail.html', **context)
-
-
-if __name__ == '__main__':
-    app.run(debug=True)
