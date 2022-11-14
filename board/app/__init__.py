@@ -11,6 +11,10 @@ app = Flask(__name__)
 app.config.from_object(Config)
 app.permanent_session_lifetime = datetime.timedelta(days=14)
 
-login_manager = LoginManager(app)
+login = LoginManager(app)
+login.login_view = 'login'
+
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
+
+from app import routes

@@ -1,26 +1,32 @@
 {% extends 'base.html' %}
 {% block title %}
-  Вход на сайт
+Вход на сайт
 {% endblock %}
 {% block content %}
-  <h1>Вход на сайт</h1>
-  <form action="/login" method="post" class="login-form">
-    <div class="col-3">
-      <label for="email"></label>
-      <div class="mb-3">
-        <input class="form-control" type="text" name="email" value="{% print get_flashed_messages(category_filter=['email'])[0] %}" required>
-        <div class="form-text">email</div>
-      </div>
-      <div class="mb-3">
-        <input class="form-control" type="password" name="password" value="" required>
-        <div class="form-text">password</div>
-      </div>
-      {% for category, message in get_flashed_messages(True) %}
-        {% if category == 'error' %}
-          <p class="alert alert-danger {{ category }}">{{ message }}</p>
-        {% endif %}
+<h1>Вход на сайт</h1>
+<form action="" method="post" novalidate>
+  <div class="col-3">
+    {{ form.hidden_tag() }}
+    <div class="mb-3">
+      {{ form.email(class_='form-control', value=get_flashed_messages(category_filter=['email'])[0]) }}
+      {{ form.email.label(class_='form-text') }}
+      {% for error in form.email.errors %}
+        <p class="alert alert-danger">{{ error }}</p>
       {% endfor %}
-      <button class="btn btn-primary" type="sumbit">Вход</button>
     </div>
-  </form>
+    <div class="mb-3">
+      {{ form.password(class_='form-control') }}
+      {{ form.password.label(class_='form-text')  }}
+      {% for error in form.password.errors %}
+        <p class="alert alert-danger">{{ error }}</p>
+      {% endfor %}
+    </div>
+    <p>{{ form.submit(class_='btn btn-primary') }}</p>
+    {% for category, message in get_flashed_messages(True) %}
+      {% if category == 'user' %}
+        <p class="alert alert-danger {{ category }}">{{ message }}</p>
+      {% endif %}
+    {% endfor %}
+  </div>
+</form>
 {% endblock %}

@@ -8,10 +8,12 @@
   <body>
     <div class="container">
       <div>
-        {% if session.get('email') %}
-          <a href="{{ url_for('logout') }}">logout</a>
-        {% else %}
+        {% if current_user.is_anonymous %}
           <a href="{{ url_for('login') }}">sign in</a>
+        {% else %}
+          {{ current_user.first_name }}
+          {{ current_user.last_name }}
+          <a href="{{ url_for('logout') }}">logout</a>
         {% endif %}
       </div>
       {% block content %}{% endblock %}

@@ -1,7 +1,9 @@
 from app import app
-from flask import (abort, flash, redirect, render_template, request, session,
-                   url_for)
+from flask import flash, redirect, render_template, request, url_for
+from flask_login import current_user, login_required, login_user, logout_user
+from werkzeug.urls import url_parse
 
+from .forms import LoginForm
 from .models import User
 
 
@@ -27,37 +29,34 @@ def index():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    session.permanent = True
-    test_password = '12345'
-    test_email = 'admin@admin.admin'
-    if request.method == 'POST':
-        if request.form.get('password') != '12345':
-            flash(request.form.get('email'), category='email')
-            flash('Неверный пароль', category='error')
-    context = {}
-    if 'email' in session:
-        return redirect(url_for('index'), 301)
-    elif (
-        request.method == 'POST'
-        and request.form.get('email') == test_email
-        and request.form.get('password') == test_password
-    ):
-        session['email'] = test_email
-        return redirect(url_for('index'), 301)
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+        if user is None or not user.check_password(form.password.data):
+            flash('Неверная пара почты/пароля', category='user')
+            return redirect(url_for('login'))
+        login_user(user)
+        next_page = request.args.get('next')
+        if not next_page or url_parse(next_page).netloc != '':
+            next_page = url_for('index')
+        return redirect(next_page)
+    if request.form.get('email'):
+        flash(request.form.get('email'), category='email')
+    context = {'form': form}
     return render_template('login.html', **context)
 
 
-@app.route('/logout')
+@app.route('/user_logout')
 def logout():
-    session.clear()
+    logout_user()
     return redirect(url_for('index'), 301)
 
 
 @app.route('/job/<category>/<int:id>')
+@login_required
 def vacancy_detail(category, id):
-    check_email = session.get('email')
-    if not check_email:
-        abort(401)
     context = {
         'vacancy': id,
         'category': category

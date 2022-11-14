@@ -7,7 +7,7 @@ load_dotenv()
 
 
 class Config:
-    SECRET_KEY = 'CHANGEME'
+    SECRET_KEY = os.getenv('SECRET_KEY', default='change-me')
     DEBUG = True
     DB_ENGINE = os.getenv('DB_ENGINE', default='postgresql')
     DB_NAME = os.getenv('DB_NAME', default='postgres')
