@@ -4,4 +4,8 @@
 {% endblock %}
 {% block content %}
   <h1>{{ category.name }}</h1>
+  {% if current_user.is_authenticated %}
+    <a href="{{ url_for('category_edit', category=category_url) }}">Редактировать</a>
+  {% endif %}
+  <p>{{ category.description }}</p>
 {% endblock %}

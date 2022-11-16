@@ -3,7 +3,11 @@
   Добавить категорию для вакансии
 {% endblock %}
 {% block content %}
-  <h1>Добавить направление вакансий</h1>
+  {% if is_edit %}
+    <h2>Редактирование <a href="{{ url_for('category_detail', category=category_url) }}">{{ category.name }}</a></h2>
+  {% else %}
+    <h1>Добавить направление вакансий</h1>
+  {% endif %}
   <form action="" method="post" novalidate>
     {{ form.hidden_tag() }}
     {{ form.name(class_='form-control') }}
@@ -16,6 +20,13 @@
     {% for error in form.description.errors %}
       <p class="alert alert-danger">{{ error }}</p>
     {% endfor %}
-    <p>{{ form.submit(class_='btn btn-primary') }}</p>
+    <br>
+    <button class="btn btn-primary" type="submit">
+      {% if is_edit %}
+        Сохранить
+      {% else %}
+        Добавить
+      {% endif %}
+    </button>
   </form>
 {% endblock %}

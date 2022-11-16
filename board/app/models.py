@@ -42,10 +42,11 @@ class Vacancy(db.Model):
     slug = db.Column(db.String(200), unique=True, nullable=False)
     description = db.Column(db.Text(), nullable=False)
     requirements = db.Column(db.Text(), nullable=False)
-    experience = db.Column(db.Text(), nullable=False)
-    count = db.Column(db.Integer(), nullable=False)
-    min_salary = db.Column(db.Integer())
-    max_salary = db.Column(db.Integer())
+    min_exp = db.Column(db.Integer)
+    max_exp = db.Column(db.Integer)
+    count = db.Column(db.Integer, nullable=False)
+    min_salary = db.Column(db.Integer)
+    max_salary = db.Column(db.Integer)
     added = db.Column(db.DateTime, default=datetime.utcnow)
     author_id = db.Column(
         db.Integer, db.ForeignKey('users.id'),

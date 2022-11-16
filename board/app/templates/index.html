@@ -5,10 +5,10 @@
 {% block content %}
   <h1>{{ title }}</h1>
   <div>
-    <ul>
-      {% for item in menu %}
-        <li>{{ item }}</li>
+      <h2>Направления вакансий</h2>
+      {% for category in categories %}
+        <h3>{{ category.name }}</h3>
+        <p>{{ category.description }}</p>
       {% endfor %}
-    </ul>
   </div>
 {% endblock %}

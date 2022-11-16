@@ -1,11 +1,11 @@
 from app import app, db
-from flask import flash, redirect, render_template, request, url_for
+from flask import abort, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required, login_user, logout_user
 from slugify import slugify
 from werkzeug.urls import url_parse
 
-from .forms import CategoryForm, LoginForm
-from .models import Category, User
+from .forms import CategoryForm, LoginForm, VacancyForm
+from .models import Category, User, Vacancy
 
 
 @app.errorhandler(404)
@@ -20,10 +20,10 @@ def error_404(error):
 
 @app.route('/')
 def index():
-    menu = ['test1', 'test2', 'test3']
+    categories = Category.query.all()
     context = {
         'title': 'hello world',
-        'menu': menu,
+        'categories': categories
     }
     return render_template('index.html', **context)
 
@@ -60,7 +60,7 @@ def logout():
 def category_add():
     form = CategoryForm()
     if form.validate_on_submit():
-        slug = slugify(form.data.get('name'))
+        slug = slugify(form.name.data)
         category = Category(
             slug=slug,
             name=form.name.data,
@@ -73,19 +73,115 @@ def category_add():
     return render_template('board/category_add.html', **context)
 
 
+@app.route('/job/<category>/edit', methods=['GET', 'POST'])
+@login_required
+def category_edit(category):
+    category_url = category
+    category = Category.query.filter_by(slug=category).first()
+    if not category:
+        abort(404)
+    form = CategoryForm(name=category.name, description=category.description)
+    if form.validate_on_submit():
+        slug = slugify(form.name.data)
+        category.name = form.name.data
+        category.description = form.description.data
+        category.slug = slug
+        db.session.commit()
+        return redirect(url_for('category_detail', category=slug), 301)
+    context = {
+        'form': form,
+        'is_edit': True,
+        'category_url': category_url,
+        'category': category
+    }
+    return render_template('board/category_add.html', **context)
+
+
 @app.route('/job/<category>')
 def category_detail(category):
+    category_url = category
     category = Category.query.filter_by(slug=category).first()
+    if not category:
+        abort(404)
     context = {
-        'category': category
+        'category': category,
+        'category_url': category_url
     }
     return render_template('board/category_detail.html', **context)
 
 
-@app.route('/job/<category>/<int:id>')
-def vacancy_detail(category, id):
+@app.route('/job/<category>/add', methods=['GET', 'POST'])
+@login_required
+def vacancy_add(category):
+    form = VacancyForm()
+    category_url = category
+    category = Category.query.filter_by(slug=category).first()
+    if not category:
+        abort(404)
+    if form.validate_on_submit():
+        data = form.data
+        data.pop('csrf_token', None)
+        slug = slugify(form.name.data)
+        vacancy = Vacancy(
+            author_id=current_user.id,
+            category_id=category.id,
+            slug=slug,
+            **data
+        )
+        db.session.add(vacancy)
+        db.session.commit()
+        return redirect(
+            url_for(
+                'vacancy_detail',
+                category=category_url,
+                vacancy=slug), 301
+        )
     context = {
-        'vacancy': id,
+        'category': category,
+        'form': form,
+        'category_url': category_url
+    }
+    return render_template('board/vacancy_add.html', **context)
+
+
+@app.route('/job/<category>/<vacancy>/edit', methods=['GET', 'POST'])
+@login_required
+def vacancy_edit(category, vacancy):
+    category_url = category
+    category = Category.query.filter_by(slug=category).first()
+    vacancy = Vacancy.query.filter_by(slug=vacancy).first()
+    if not category or not vacancy:
+        abort(404)
+    form = VacancyForm(**vacancy.__dict__)
+    if form.validate_on_submit():
+        data = form.data
+        data.pop('csrf_token', None)
+        slug = slugify(form.name.data)
+        db.session.commit()
+        return redirect(
+            url_for(
+                'vacancy_detail',
+                category=category_url,
+                vacancy=slug), 301
+        )
+    context = {
+        'category': category,
+        'vacancy': vacancy,
+        'form': form,
+        'category_url': category_url,
+        'is_edit': True
+    }
+    return render_template('board/vacancy_add.html', **context)
+
+
+@app.route('/job/<category>/<vacancy>')
+def vacancy_detail(category, vacancy):
+    category = Category.query.filter_by(slug=category).first()
+    vacancy = Vacancy.query.filter_by(slug=vacancy).first()
+    if not category or not vacancy:
+        abort(404)
+    context = {
+        'vacancy': vacancy,
         'category': category
     }
     return render_template('board/vacancy_detail.html', **context)
