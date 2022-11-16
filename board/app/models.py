@@ -24,6 +24,54 @@ class User(UserMixin, db.Model):
         return f'<User {self.email}>'
 
 
+class Category(db.Model):
+    __tablename__ = 'categories'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(200), nullable=False)
+    slug = db.Column(db.String(200), unique=True, nullable=False)
+    description = db.Column(db.Text(), nullable=False)
+
+    def __repr__(self):
+        return f'<Category {self.name}>'
+
+
+class Vacancy(db.Model):
+    __tablename__ = 'vacancies'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(200), nullable=False)
+    slug = db.Column(db.String(200), unique=True, nullable=False)
+    description = db.Column(db.Text(), nullable=False)
+    requirements = db.Column(db.Text(), nullable=False)
+    experience = db.Column(db.Text(), nullable=False)
+    count = db.Column(db.Integer(), nullable=False)
+    min_salary = db.Column(db.Integer())
+    max_salary = db.Column(db.Integer())
+    added = db.Column(db.DateTime, default=datetime.utcnow)
+    author_id = db.Column(
+        db.Integer, db.ForeignKey('users.id'),
+        nullable=False)
+    category_id = db.Column(
+        db.Integer, db.ForeignKey('categories.id'),
+        nullable=False)
+
+    def __repr__(self):
+        return f'<Vacancy {self.name}>'
+
+
+class Response(db.Model):
+    __tablename__ = 'responses'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(200), nullable=False)
+    email = db.Column(db.String(200), nullable=False)
+    comment = db.Column(db.Text())
+    vacancy_id = db.Column(
+        db.Integer, db.ForeignKey('vacancies.id'),
+        nullable=False)
+
+    def __repr__(self):
+        return f'<Responses {self.name}>'
+
+
 @login.user_loader
 def load_user(id):
     return User.query.get(int(id))
