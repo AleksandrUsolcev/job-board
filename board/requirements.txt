@@ -6,3 +6,6 @@ Flask-SQLAlchemy==3.0.2
 Flask-WTF==1.0.1
 psycopg2==2.9.5
 python-dotenv==0.21.0
+python-slugify==6.1.2
+WTForms==3.0.1
+WTForms-Alchemy==0.18.0

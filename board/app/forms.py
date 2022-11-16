@@ -1,5 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import EmailField, PasswordField, SubmitField
+from wtforms import (EmailField, PasswordField, StringField, SubmitField,
+                     TextAreaField)
 from wtforms.validators import DataRequired, Email
 
 
@@ -14,3 +15,13 @@ class LoginForm(FlaskForm):
         validators=[DataRequired('Обязательное поле')]
     )
     submit = SubmitField('Вход')
+
+
+class CategoryForm(FlaskForm):
+    name = StringField(
+        'Направление вакансии',
+        validators=[DataRequired('Обязательное поле')]
+    )
+    description = TextAreaField('Описание', validators=[
+                                DataRequired('Обязательное поле')])
+    submit = SubmitField('Добавить категорию')

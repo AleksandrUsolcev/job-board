@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}
+  Добавить категорию для вакансии
+{% endblock %}
+{% block content %}
+  <h1>Добавить направление вакансий</h1>
+  <form action="" method="post" novalidate>
+    {{ form.hidden_tag() }}
+    {{ form.name(class_='form-control') }}
+    {{ form.name.label(class_='form-text') }}
+    {% for error in form.name.errors %}
+      <p class="alert alert-danger">{{ error }}</p>
+    {% endfor %}
+    {{ form.description(class_='form-control') }}
+    {{ form.description.label(class_='form-text') }}
+    {% for error in form.description.errors %}
+      <p class="alert alert-danger">{{ error }}</p>
+    {% endfor %}
+    <p>{{ form.submit(class_='btn btn-primary') }}</p>
+  </form>
+{% endblock %}

@@ -1,10 +1,11 @@
-from app import app
+from app import app, db
 from flask import flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required, login_user, logout_user
+from slugify import slugify
 from werkzeug.urls import url_parse
 
-from .forms import LoginForm
-from .models import User
+from .forms import CategoryForm, LoginForm
+from .models import Category, User
 
 
 @app.errorhandler(404)
@@ -54,11 +55,37 @@ def logout():
     return redirect(url_for('index'), 301)
 
 
-@app.route('/job/<category>/<int:id>')
+@app.route('/job/add', methods=['GET', 'POST'])
 @login_required
+def category_add():
+    form = CategoryForm()
+    if form.validate_on_submit():
+        slug = slugify(form.data.get('name'))
+        category = Category(
+            slug=slug,
+            name=form.name.data,
+            description=form.description.data
+        )
+        db.session.add(category)
+        db.session.commit()
+        return redirect(url_for('category_detail', category=slug), 301)
+    context = {'form': form}
+    return render_template('board/category_add.html', **context)
+
+
+@app.route('/job/<category>')
+def category_detail(category):
+    category = Category.query.filter_by(slug=category).first()
+    context = {
+        'category': category
+    }
+    return render_template('board/category_detail.html', **context)
+
+
+@app.route('/job/<category>/<int:id>')
 def vacancy_detail(category, id):
     context = {
         'vacancy': id,
         'category': category
     }
-    return render_template('vacancy_detail.html', **context)
+    return render_template('board/vacancy_detail.html', **context)

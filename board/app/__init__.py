@@ -13,6 +13,7 @@ app.register_blueprint(admin, url_prefix='/admin')
 
 app.config.from_object(Config)
 app.permanent_session_lifetime = datetime.timedelta(days=14)
+app.url_map.strict_slashes = False
 
 login = LoginManager(app)
 login.login_view = 'login'
