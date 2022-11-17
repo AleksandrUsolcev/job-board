@@ -7,10 +7,12 @@
   {% if current_user.is_authenticated %}
     <a href="{{ url_for('category_edit', category=category_url) }}">Редактировать</a>
   {% endif %}
-  <p>{{ category.description }}</p>
-  <p>
+  <div>{{ category.description }}</div>
+  <div>
     {% for vacancy in category.vacancies.all() %}
-      <p>{{ vacancy.name }}</p>
+    <div>
+      <a href="{{ url_for('vacancy_detail', category=category_url, vacancy=vacancy.slug) }}">{{ vacancy.name }}</a>
+    </div>
     {% endfor %}
-  </p>
+  </div>
 {% endblock %}

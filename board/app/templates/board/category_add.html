@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 {% block title %}
-  Добавить категорию для вакансии
+  {% if is_edit %}
+    Редактировать направление вакансий
+  {% else %}
+    Добавить направление для вакансии
+  {% endif %}
 {% endblock %}
 {% block content %}
   {% if is_edit %}

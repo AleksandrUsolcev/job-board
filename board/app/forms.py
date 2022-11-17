@@ -1,8 +1,18 @@
+from app import db
+from app.models import Category, Vacancy
 from flask_wtf import FlaskForm
+from slugify import slugify
 from wtforms import (EmailField, IntegerField, PasswordField, StringField,
                      SubmitField, TextAreaField)
 from wtforms.validators import (DataRequired, Email, NumberRange, Optional,
                                 ValidationError)
+from wtforms.widgets import HiddenInput
+
+WRONG_NAMES = ['del', 'add', 'edit', 'job', 'admin']
+
+
+def category_choices():
+    return db.session.query(Category).all()
 
 
 class LoginForm(FlaskForm):
@@ -21,6 +31,7 @@ class LoginForm(FlaskForm):
 
 
 class CategoryForm(FlaskForm):
+    id = IntegerField(widget=HiddenInput(), validators=[Optional()])
     name = StringField(
         'Направление вакансии',
         validators=[DataRequired('Обязательное поле')]
@@ -30,8 +41,19 @@ class CategoryForm(FlaskForm):
         validators=[DataRequired('Обязательное поле')]
     )
 
+    def validate_name(form, field):
+        slug = slugify(field.data)
+        current_id = form.data.get('id')
+        category = Category.query.filter_by(slug=slug).first()
+        error = 'Направление с таким наименованием уже существует'
+        if category and category.id != current_id:
+            raise ValidationError(error)
+        if slug in WRONG_NAMES:
+            raise ValidationError('Недопустимое наименование')
+
 
 class VacancyForm(FlaskForm):
+    id = IntegerField(widget=HiddenInput(), validators=[Optional()])
     name = StringField(
         'Наименование вакансии',
         validators=[DataRequired('Обязательное поле')]
@@ -66,17 +88,6 @@ class VacancyForm(FlaskForm):
             )
         ]
     )
-    count = IntegerField(
-        'Количество вакансий',
-        validators=[
-            DataRequired('Обязательное поле'),
-            NumberRange(
-                min=1,
-                max=10,
-                message='Допустимый диапазон значений от 1 до 10'
-            )
-        ]
-    )
     min_salary = IntegerField(
         'Минимальный оклад (руб)',
         validators=[
@@ -99,6 +110,27 @@ class VacancyForm(FlaskForm):
             )
         ]
     )
+    count = IntegerField(
+        'Количество вакансий',
+        validators=[
+            DataRequired('Обязательное поле'),
+            NumberRange(
+                min=1,
+                max=10,
+                message='Допустимый диапазон значений от 1 до 10'
+            )
+        ]
+    )
+
+    def validate_name(form, field):
+        slug = slugify(field.data)
+        current_id = form.data.get('id')
+        vacancy = Vacancy.query.filter_by(slug=slug).first()
+        error = 'Вакансия с таким наименованием уже существует'
+        if vacancy and vacancy.id != current_id:
+            raise ValidationError(error)
+        if slug in WRONG_NAMES:
+            raise ValidationError('Недопустимое наименование')
 
     def validate_min_exp(form, field):
         max_exp = form.data.get('max_exp')

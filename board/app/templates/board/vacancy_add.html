@@ -1,52 +1,37 @@
 {% extends 'base.html' %}
 {% block title %}
-  Добавить вакансию
+  {% if is_edit %}
+   Редактировать вакансию
+  {% else %}
+   Добавить вакансию
+  {% endif %}
 {% endblock %}
 {% block content %}
-  <h1>Добавить вакансию</h1>
+  <h1>
+    {% if is_edit %}
+      Редактировать вакансию
+    {% else %}
+      Добавить вакансию
+    {% endif %}
+  </h1>
   <form action="" method="post" novalidate>
-    {{ form.hidden_tag() }}
-    {{ form.name(class_='form-control') }}
-    {{ form.name.label(class_='form-text') }}
-    {% for error in form.name.errors %}
-      <p class="alert alert-danger">{{ error }}</p>
-    {% endfor %}
-    {{ form.description(class_='form-control') }}
-    {{ form.description.label(class_='form-text') }}
-    {% for error in form.description.errors %}
-      <p class="alert alert-danger">{{ error }}</p>
-    {% endfor %}
-    {{ form.requirements(class_='form-control') }}
-    {{ form.requirements.label(class_='form-text') }}
-    {% for error in form.requirements.errors %}
-      <p class="alert alert-danger">{{ error }}</p>
-    {% endfor %}
-    {{ form.min_exp(class_='form-control') }}
-    {{ form.min_exp.label(class_='form-text') }}
-    {% for error in form.min_exp.errors %}
-      <p class="alert alert-danger">{{ error }}</p>
-    {% endfor %}
-    {{ form.max_exp(class_='form-control') }}
-    {{ form.max_exp.label(class_='form-text') }}
-    {% for error in form.max_exp.errors %}
-      <p class="alert alert-danger">{{ error }}</p>
-    {% endfor %}
-    {{ form.min_salary(class_='form-control') }}
-    {{ form.min_salary.label(class_='form-text') }}
-    {% for error in form.min_salary.errors %}
-      <p class="alert alert-danger">{{ error }}</p>
-    {% endfor %}
-    {{ form.max_salary(class_='form-control') }}
-    {{ form.max_salary.label(class_='form-text') }}
-    {% for error in form.max_salary.errors %}
-      <p class="alert alert-danger">{{ error }}</p>
-    {% endfor %}
-    {{ form.count(class_='form-control') }}
-    {{ form.count.label(class_='form-text') }}
-    {% for error in form.count.errors %}
-      <p class="alert alert-danger">{{ error }}</p>
-    {% endfor %}
-    <br>
+    <div class="row">
+      {% for item in form %}
+        <div class="{% if item.id in ['min_salary', 'max_salary', 'min_exp', 'max_exp', 'count'] %}col-6{% endif %}">
+          {{ item(class_='form-control') }}
+          {% if item.id not in ['csrf_token', 'id'] %}
+            {{ item.label(class_='form-text pb-4') }}
+          {% endif %}
+          {% if item.errors %}
+            <div class="alert alert-danger">
+              {% for error in item.errors %}
+                <p class="p-0 m-0">{{ error }}</p>
+              {% endfor %}
+            </div>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
     <button class="btn btn-primary" type="submit">
       {% if is_edit %}
         Сохранить

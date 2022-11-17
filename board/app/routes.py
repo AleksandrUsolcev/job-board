@@ -80,7 +80,7 @@ def category_edit(category):
     category = Category.query.filter_by(slug=category).first()
     if not category:
         abort(404)
-    form = CategoryForm(name=category.name, description=category.description)
+    form = CategoryForm(obj=category)
     if form.validate_on_submit():
         slug = slugify(form.name.data)
         category.name = form.name.data
@@ -113,19 +113,19 @@ def category_detail(category):
 @app.route('/job/<category>/add', methods=['GET', 'POST'])
 @login_required
 def vacancy_add(category):
-    form = VacancyForm()
     category_url = category
     category = Category.query.filter_by(slug=category).first()
+    form = VacancyForm()
     if not category:
         abort(404)
     if form.validate_on_submit():
         data = form.data
-        data.pop('csrf_token', None)
         slug = slugify(form.name.data)
+        data.pop('csrf_token', None)
         vacancy = Vacancy(
             author_id=current_user.id,
-            category_id=category.id,
             slug=slug,
+            category_id=category.id,
             **data
         )
         db.session.add(vacancy)
@@ -149,22 +149,18 @@ def vacancy_add(category):
 def vacancy_edit(category, vacancy):
     category_url = category
     vacancy_url = vacancy
-    category = Category.query.filter_by(slug=category).first()
     vacancy = Vacancy.query.filter_by(slug=vacancy).first()
-    if not category or not vacancy:
+    if not vacancy:
         abort(404)
-    form = VacancyForm(**vacancy.__dict__)
+    category = Category.query.filter_by(id=vacancy.category_id).first()
+    if category.slug != category_url.lower():
+        abort(404)
+    form = VacancyForm(obj=vacancy)
     if form.validate_on_submit():
         slug = slugify(form.name.data)
         vacancy.slug = slug
-        vacancy.name = form.name.data
-        vacancy.description = form.description.data
-        vacancy.requirements = form.requirements.data
-        vacancy.min_exp = form.min_exp.data
-        vacancy.max_exp = form.max_exp.data
-        vacancy.count = form.count.data
-        vacancy.min_salary = form.min_salary.data
-        vacancy.max_salary = form.max_salary.data
+        for key, value in form.data.items():
+            setattr(vacancy, key, value)
         db.session.commit()
         return redirect(
             url_for(
@@ -187,9 +183,11 @@ def vacancy_edit(category, vacancy):
 def vacancy_detail(category, vacancy):
     category_url = category
     vacancy_url = vacancy
-    category = Category.query.filter_by(slug=category).first()
     vacancy = Vacancy.query.filter_by(slug=vacancy).first()
-    if not category or not vacancy:
+    if not vacancy:
+        abort(404)
+    category = Category.query.filter_by(id=vacancy.category_id).first()
+    if category.slug != category_url.lower():
         abort(404)
     context = {
         'vacancy': vacancy,
