@@ -31,6 +31,8 @@ class Category(db.Model):
     slug = db.Column(db.String(200), unique=True, nullable=False)
     description = db.Column(db.Text(), nullable=False)
 
+    vacancies = db.relationship('Vacancy', backref='category', lazy='dynamic')
+
     def __repr__(self):
         return f'<Category {self.name}>'
 

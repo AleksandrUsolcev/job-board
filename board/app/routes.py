@@ -148,15 +148,23 @@ def vacancy_add(category):
 @login_required
 def vacancy_edit(category, vacancy):
     category_url = category
+    vacancy_url = vacancy
     category = Category.query.filter_by(slug=category).first()
     vacancy = Vacancy.query.filter_by(slug=vacancy).first()
     if not category or not vacancy:
         abort(404)
     form = VacancyForm(**vacancy.__dict__)
     if form.validate_on_submit():
-        data = form.data
-        data.pop('csrf_token', None)
         slug = slugify(form.name.data)
+        vacancy.slug = slug
+        vacancy.name = form.name.data
+        vacancy.description = form.description.data
+        vacancy.requirements = form.requirements.data
+        vacancy.min_exp = form.min_exp.data
+        vacancy.max_exp = form.max_exp.data
+        vacancy.count = form.count.data
+        vacancy.min_salary = form.min_salary.data
+        vacancy.max_salary = form.max_salary.data
         db.session.commit()
         return redirect(
             url_for(
@@ -169,6 +177,7 @@ def vacancy_edit(category, vacancy):
         'vacancy': vacancy,
         'form': form,
         'category_url': category_url,
+        'vacancy_url': vacancy_url,
         'is_edit': True
     }
     return render_template('board/vacancy_add.html', **context)
@@ -176,12 +185,16 @@ def vacancy_edit(category, vacancy):
 
 @app.route('/job/<category>/<vacancy>')
 def vacancy_detail(category, vacancy):
+    category_url = category
+    vacancy_url = vacancy
     category = Category.query.filter_by(slug=category).first()
     vacancy = Vacancy.query.filter_by(slug=vacancy).first()
     if not category or not vacancy:
         abort(404)
     context = {
         'vacancy': vacancy,
-        'category': category
+        'category': category,
+        'category_url': category_url,
+        'vacancy_url': vacancy_url,
     }
     return render_template('board/vacancy_detail.html', **context)

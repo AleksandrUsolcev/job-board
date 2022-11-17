@@ -8,4 +8,9 @@
     <a href="{{ url_for('category_edit', category=category_url) }}">Редактировать</a>
   {% endif %}
   <p>{{ category.description }}</p>
+  <p>
+    {% for vacancy in category.vacancies.all() %}
+      <p>{{ vacancy.name }}</p>
+    {% endfor %}
+  </p>
 {% endblock %}
