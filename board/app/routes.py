@@ -116,12 +116,14 @@ def vacancy_add(category):
     category_url = category
     category = Category.query.filter_by(slug=category).first()
     form = VacancyForm()
+    form.category_id.data = category
     if not category:
         abort(404)
     if form.validate_on_submit():
         data = form.data
         slug = slugify(form.name.data)
         data.pop('csrf_token', None)
+        data.pop('category_id', None)
         vacancy = Vacancy(
             author_id=current_user.id,
             slug=slug,
@@ -156,16 +158,21 @@ def vacancy_edit(category, vacancy):
     if category.slug != category_url.lower():
         abort(404)
     form = VacancyForm(obj=vacancy)
+    if not form.validate_on_submit() and not form.errors:
+        form.category_id.data = category
     if form.validate_on_submit():
         slug = slugify(form.name.data)
         vacancy.slug = slug
-        for key, value in form.data.items():
+        vacancy.category_id = form.category_id.data.id
+        data = form.data
+        data.pop('category_id', None)
+        for key, value in data.items():
             setattr(vacancy, key, value)
         db.session.commit()
         return redirect(
             url_for(
                 'vacancy_detail',
-                category=category_url,
+                category=form.category_id.data.slug,
                 vacancy=slug), 301
         )
     context = {

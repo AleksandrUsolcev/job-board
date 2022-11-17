@@ -7,6 +7,7 @@ from wtforms import (EmailField, IntegerField, PasswordField, StringField,
 from wtforms.validators import (DataRequired, Email, NumberRange, Optional,
                                 ValidationError)
 from wtforms.widgets import HiddenInput
+from wtforms_alchemy.fields import QuerySelectField
 
 WRONG_NAMES = ['del', 'add', 'edit', 'job', 'admin']
 
@@ -54,6 +55,9 @@ class CategoryForm(FlaskForm):
 
 class VacancyForm(FlaskForm):
     id = IntegerField(widget=HiddenInput(), validators=[Optional()])
+    category_id = QuerySelectField(
+        'Направление вакансии', validators=[DataRequired()],
+        query_factory=category_choices, get_label='name')
     name = StringField(
         'Наименование вакансии',
         validators=[DataRequired('Обязательное поле')]

@@ -18,7 +18,11 @@
     <div class="row">
       {% for item in form %}
         <div class="{% if item.id in ['min_salary', 'max_salary', 'min_exp', 'max_exp', 'count'] %}col-6{% endif %}">
-          {{ item(class_='form-control') }}
+          {% if not is_edit and item.id == 'category_id' %}
+            {{ item(class_='form-control', readonly=true, disabled=true) }}
+          {% else %}
+            {{ item(class_='form-control') }}
+          {% endif %}
           {% if item.id not in ['csrf_token', 'id'] %}
             {{ item.label(class_='form-text pb-4') }}
           {% endif %}
