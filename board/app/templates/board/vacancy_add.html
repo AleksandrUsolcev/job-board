@@ -7,41 +7,43 @@
   {% endif %}
 {% endblock %}
 {% block content %}
-  <h1>
+  <h1 class="pb-4">
     {% if is_edit %}
       Редактировать вакансию
     {% else %}
       Добавить вакансию
     {% endif %}
   </h1>
-  <form action="" method="post" novalidate>
-    <div class="row">
-      {% for item in form %}
-        <div class="{% if item.id in ['min_salary', 'max_salary', 'min_exp', 'max_exp', 'count'] %}col-6{% endif %}">
-          {% if not is_edit and item.id == 'category_id' %}
-            {{ item(class_='form-control', readonly=true, disabled=true) }}
-          {% else %}
-            {{ item(class_='form-control') }}
-          {% endif %}
-          {% if item.id not in ['csrf_token', 'id'] %}
-            {{ item.label(class_='form-text pb-4') }}
-          {% endif %}
-          {% if item.errors %}
-            <div class="alert alert-danger">
-              {% for error in item.errors %}
-                <p class="p-0 m-0">{{ error }}</p>
-              {% endfor %}
-            </div>
-          {% endif %}
-        </div>
-      {% endfor %}
-    </div>
-    <button class="btn btn-primary" type="submit">
-      {% if is_edit %}
-        Сохранить
-      {% else %}
-        Добавить
-      {% endif %}
-    </button>
-  </form>
+  <div class="col-lg-6 col-md-12">
+    <form action="" method="post" novalidate>
+      <div class="row">
+        {% for item in form %}
+          <div class="{% if item.id in ['min_salary', 'max_salary', 'min_exp', 'max_exp', 'count'] %}col-6{% endif %}">
+            {% if not is_edit and item.id == 'category_id' %}
+              {{ item(class_='form-control', readonly=true, disabled=true) }}
+            {% else %}
+              {{ item(class_='form-control') }}
+            {% endif %}
+            {% if item.id not in ['csrf_token', 'id'] %}
+              {{ item.label(class_='form-text pb-4') }}
+            {% endif %}
+            {% if item.errors %}
+              <div class="alert alert-danger">
+                {% for error in item.errors %}
+                  <p class="p-0 m-0">{{ error }}</p>
+                {% endfor %}
+              </div>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+      <button class="btn btn-primary" type="submit">
+        {% if is_edit %}
+          Сохранить
+        {% else %}
+          Добавить
+        {% endif %}
+      </button>
+    </form>
+  </div>
 {% endblock %}

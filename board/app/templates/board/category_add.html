@@ -10,27 +10,29 @@
   {% if is_edit %}
     <h2>Редактирование <a href="{{ url_for('category_detail', category=category_url) }}">{{ category.name }}</a></h2>
   {% else %}
-    <h1>Добавить направление вакансий</h1>
+    <h1 class="pb-4">Добавить направление вакансий</h1>
   {% endif %}
-  <form action="" method="post" novalidate>
-    {{ form.hidden_tag() }}
-    {{ form.name(class_='form-control') }}
-    {{ form.name.label(class_='form-text') }}
-    {% for error in form.name.errors %}
-      <p class="alert alert-danger">{{ error }}</p>
-    {% endfor %}
-    {{ form.description(class_='form-control') }}
-    {{ form.description.label(class_='form-text') }}
-    {% for error in form.description.errors %}
-      <p class="alert alert-danger">{{ error }}</p>
-    {% endfor %}
-    <br>
-    <button class="btn btn-primary" type="submit">
-      {% if is_edit %}
-        Сохранить
-      {% else %}
-        Добавить
-      {% endif %}
-    </button>
-  </form>
+  <div class="col-lg-6 col-md-12">
+    <form action="" method="post" novalidate>
+      {{ form.hidden_tag() }}
+      {{ form.name(class_='form-control') }}
+      {{ form.name.label(class_='form-text pb-4') }}
+      {% for error in form.name.errors %}
+        <p class="alert alert-danger">{{ error }}</p>
+      {% endfor %}
+      {{ form.description(class_='form-control') }}
+      {{ form.description.label(class_='form-text pb-4') }}
+      {% for error in form.description.errors %}
+        <p class="alert alert-danger">{{ error }}</p>
+      {% endfor %}
+      <br>
+      <button class="btn btn-primary" type="submit">
+        {% if is_edit %}
+          Сохранить
+        {% else %}
+          Добавить
+        {% endif %}
+      </button>
+    </form>
+  </div>
 {% endblock %}

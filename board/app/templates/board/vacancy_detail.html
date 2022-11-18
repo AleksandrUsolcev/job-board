@@ -3,16 +3,42 @@
   {{ vacancy.name }}
 {% endblock %}
 {% block content %}
+  <a href="{{ url_for('category_detail', category=category_url) }}" class="text-decoration-none fs-5 fw-bold">{{ category.name }}</a>
   <h1>{{ vacancy.name }}</h1>
   {% if current_user.is_authenticated %}
-    <a href="{{ url_for('vacancy_edit', category=category_url, vacancy=vacancy_url) }}">Редактировать</a>
+  <div class="py-2">
+    <a class="btn btn-primary me-4" href="{{ url_for('vacancy_edit', category=category_url, vacancy=vacancy_url) }}">Редактировать</a>
+  </div>
   {% endif %}
-  <h2><a href="{{ url_for('category_detail', category=category_url) }}">{{ category.name }}</a></h2>
+  {% if vacancy.quantity > 0 and current_user.is_anonymous %}
+  <div class="py-2">
+    <a href="" class="btn btn-primary me-4">Откликнуться</a>
+  </div>
+  {% endif %}
+  <p class="pt-3 fs-5">
+    {% if vacancy.max_salary or vacancy.min_salary %}
+        {% if vacancy.min_salary %}
+          от <span class="fw-bold">{{ vacancy.min_salary }}</span>
+        {% endif %}
+        {% if vacancy.max_salary %}
+          до <span class="fw-bold">{{ vacancy.max_salary }}</span>
+        {% endif %}
+        <span class="pe-4">руб.</span>
+    {% endif %}
+    {% if vacancy.min_exp or vacancy.max_exp %}
+      <span>Опыт </span>
+      {% if vacancy.min_exp %}
+        от <span class="fw-bold">{{ vacancy.min_exp }}</span>
+      {% endif %}
+      {% if vacancy.max_exp %}
+        до <span class="fw-bold">{{ vacancy.max_exp }}</span>
+      {% endif %}
+      <span class="pe-4">лет</span>
+    {% endif %}
+    <span>Вакантных мест: <span class="fw-bold">{{ vacancy.quantity }}</span></span>
+  </p>
+  <h3 class="py-3">Описание вакансии</h3>
   <p>{{ vacancy.description|brline|safe }}</p>
+  <h3 class="py-3">Требования к кандидату</h3>
   <p>{{ vacancy.requirements|brline|safe }}</p>
-  <div>{{ vacancy.count }}</div>
-  <div>{{ vacancy.min_exp }}</div>
-  <div>{{ vacancy.max_exp }}</div>
-  <div>{{ vacancy.min_salary }}</div>
-  <div>{{ vacancy.max_salary }}</div>
 {% endblock %}

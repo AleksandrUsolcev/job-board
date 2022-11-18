@@ -114,7 +114,7 @@ class VacancyForm(FlaskForm):
             )
         ]
     )
-    count = IntegerField(
+    quantity = IntegerField(
         'Количество вакансий',
         validators=[
             DataRequired('Обязательное поле'),

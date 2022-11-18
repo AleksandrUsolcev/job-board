@@ -2,6 +2,7 @@ from datetime import datetime
 
 from app import db, login
 from flask_login import UserMixin
+from sqlalchemy import func
 from werkzeug.security import check_password_hash, generate_password_hash
 
 
@@ -33,6 +34,11 @@ class Category(db.Model):
 
     vacancies = db.relationship('Vacancy', backref='category', lazy='dynamic')
 
+    @property
+    def vacancies_quantity(self):
+        return self.vacancies.with_entities(
+            func.sum(Vacancy.quantity)).scalar()
+
     def __repr__(self):
         return f'<Category {self.name}>'
 
@@ -46,7 +52,7 @@ class Vacancy(db.Model):
     requirements = db.Column(db.Text(), nullable=False)
     min_exp = db.Column(db.Integer)
     max_exp = db.Column(db.Integer)
-    count = db.Column(db.Integer, nullable=False)
+    quantity = db.Column(db.Integer, nullable=False)
     min_salary = db.Column(db.Integer)
     max_salary = db.Column(db.Integer)
     added = db.Column(db.DateTime, default=datetime.utcnow)

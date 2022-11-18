@@ -1,14 +1,26 @@
 {% extends 'base.html' %}
 {% block title %}
-  {{ title}}
+  {{ title }}
 {% endblock %}
 {% block content %}
-  <h1>{{ title }}</h1>
-  <div>
-      <h2>Направления вакансий</h2>
-      {% for category in categories %}
-        <h3>{{ category.name }}</h3>
-        <p>{{ category.description }}</p>
-      {% endfor %}
+  <div class="row">
+    {% for category in categories %}
+      <div class="col-12 col-md-6 col-lg-4 p-4">
+        <a href="{{ url_for('category_detail', category=category.slug) }}" class="text-decoration-none">
+          <div class="bg-light shadow p-4">
+            <h3>{{ category.name }}</h3>
+            <p>{{ category.description }}</p>
+            <p class="fw-bold">
+              {% if category.vacancies.count() > 0 %}
+                <span class="pe-4">Вакансий: {{ category.vacancies.count() }}</span>
+                {% if category.vacancies_quantity %}
+                  <span>Мест: {{ category.vacancies_quantity }}</span>
+                {% endif %}
+              {% endif %}
+            </p>
+          </div>
+        </a>
+      </div>
+    {% endfor %}
   </div>
 {% endblock %}

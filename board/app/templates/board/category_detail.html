@@ -3,16 +3,51 @@
   {{ category.name }}
 {% endblock %}
 {% block content %}
-  <h1>{{ category.name }}</h1>
+  <h1 class="fw-bold">{{ category.name }}</h1>
   {% if current_user.is_authenticated %}
-    <a href="{{ url_for('category_edit', category=category_url) }}">Редактировать</a>
+  <div class="py-2">
+    <a class="btn btn-primary me-4" href="{{ url_for('category_edit', category=category_url) }}">Редактировать</a>
+    <a class="btn btn-success" href="{{ url_for('vacancy_add', category=category_url) }}">Добавить вакансию</a>
+  </div>
   {% endif %}
-  <div>{{ category.description }}</div>
+  <h4 class="py-3">
+    {% if category.vacancies.count() > 0 %}
+      <span class="pe-5">Вакансий: <span class="fw-bold">{{ category.vacancies.count() }}</span></span>
+      {% if category.vacancies_quantity %}
+        <span>Мест: <span class="fw-bold">{{ category.vacancies_quantity }}</span></span>
+      {% endif %}
+    {% endif %}
+  </h4>
+  <h4>{{ category.description }}</h4>
   <div>
     {% for vacancy in category.vacancies.all() %}
-    <div>
-      <a href="{{ url_for('vacancy_detail', category=category_url, vacancy=vacancy.slug) }}">{{ vacancy.name }}</a>
-    </div>
+      <div class="bg-light shadow p-4 my-5 row">
+        <div class="col-9">
+          <a href="{{ url_for('vacancy_detail', category=category_url, vacancy=vacancy.slug) }}" class="text-decoration-none"><h4>{{ vacancy.name }}</h4></a>
+          <p class="pt-3 fs-5">
+            {% if vacancy.max_salary or vacancy.min_salary %}
+                {% if vacancy.min_salary %}
+                  от <span class="fw-bold">{{ vacancy.min_salary }}</span>
+                {% endif %}
+                {% if vacancy.max_salary %}
+                  до <span class="fw-bold">{{ vacancy.max_salary }}</span>
+                {% endif %}
+                <span class="pe-4">руб.</span>
+            {% endif %}
+            <span>Вакантных мест: <span class="fw-bold">{{ vacancy.quantity }}</span></span>
+          </p>
+          <p>{{ vacancy.description[:240] }}{% if vacancy.description|length >= 240 %}...{% endif %}</p>
+        </div>
+        {% if vacancy.quantity > 0 and current_user.is_anonymous %}
+          <div class="col-3 d-flex align-items-center flex-row-reverse">
+            <a href="" class="btn btn-primary">Откликнуться</a>
+          </div>
+        {% elif current_user.is_authenticated %}
+          <div class="col-3 d-flex align-items-center flex-row-reverse">
+            <a href="{{ url_for('vacancy_edit', category=category_url, vacancy=vacancy.slug) }}" class="btn btn-primary">Редактировать</a>
+          </div>
+        {% endif %}
+      </div>
     {% endfor %}
   </div>
 {% endblock %}

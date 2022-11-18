@@ -2,6 +2,7 @@ from app import app, db
 from flask import abort, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required, login_user, logout_user
 from slugify import slugify
+from sqlalchemy import func
 from werkzeug.urls import url_parse
 
 from .forms import CategoryForm, LoginForm, VacancyForm
@@ -20,9 +21,10 @@ def error_404(error):
 
 @app.route('/')
 def index():
-    categories = Category.query.all()
+    categories = Category.query.outerjoin(Vacancy).group_by(
+        Category.id).order_by(func.count(Vacancy.id).desc()).all()
     context = {
-        'title': 'hello world',
+        'title': 'Job Board',
         'categories': categories
     }
     return render_template('index.html', **context)

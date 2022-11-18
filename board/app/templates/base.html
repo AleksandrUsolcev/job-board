@@ -6,16 +6,27 @@
     <title>{% block title %}{% endblock %}</title>
   </head>
   <body>
-    <div class="container">
-      <div>
-        {% if current_user.is_anonymous %}
-          <a href="{{ url_for('login') }}">sign in</a>
-        {% else %}
-          {{ current_user.first_name }}
-          {{ current_user.last_name }}
-          <a href="{{ url_for('logout') }}">logout</a>
-        {% endif %}
+    <div class="container-fluid bg-primary">
+      <div class="container">
+        <div class="row py-4">
+          <div class="col-6">
+            <a href="{{ url_for('index') }}" class="text-decoration-none"><h1 class="logo fw-bold text-white">Job Board</h1></a>
+          </div>
+          <div class="col-6 d-flex align-items-center flex-row-reverse text-white">
+            {% if current_user.is_anonymous %}
+              <a href="{{ url_for('login') }}" class="fw-bold text-white text-decoration-none">Вход для персонала</a>
+            {% else %}
+              <a href="{{ url_for('logout') }}" class="fw-bold text-white text-decoration-none">выход</a>
+              <span class="text-white px-3">
+                {{ current_user.first_name }}
+                {{ current_user.last_name }}
+              </span>
+            {% endif %}
+          </div>
+        </div>
       </div>
+    </div>
+    <div class="container main-content py-4">
       {% block content %}{% endblock %}
     </div>
   </body>
