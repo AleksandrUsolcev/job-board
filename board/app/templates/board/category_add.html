@@ -8,7 +8,8 @@
 {% endblock %}
 {% block content %}
   {% if is_edit %}
-    <h2>Редактирование <a href="{{ url_for('category_detail', category=category_url) }}">{{ category.name }}</a></h2>
+    <a href="{{ url_for('category_detail', category=category_url) }}" class="text-decoration-none fs-5 fw-bold">{{ category.name }}</a>
+    <h1 class="pb-4">Редактировать направление вакансий</h1>
   {% else %}
     <h1 class="pb-4">Добавить направление вакансий</h1>
   {% endif %}
