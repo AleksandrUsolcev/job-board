@@ -8,4 +8,11 @@
     <a href="{{ url_for('vacancy_edit', category=category_url, vacancy=vacancy_url) }}">Редактировать</a>
   {% endif %}
   <h2><a href="{{ url_for('category_detail', category=category_url) }}">{{ category.name }}</a></h2>
+  <p>{{ vacancy.description|brline|safe }}</p>
+  <p>{{ vacancy.requirements|brline|safe }}</p>
+  <div>{{ vacancy.count }}</div>
+  <div>{{ vacancy.min_exp }}</div>
+  <div>{{ vacancy.max_exp }}</div>
+  <div>{{ vacancy.min_salary }}</div>
+  <div>{{ vacancy.max_salary }}</div>
 {% endblock %}

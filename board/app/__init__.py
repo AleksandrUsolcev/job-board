@@ -22,3 +22,4 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
 from app import routes
+from app.template_filters import *
