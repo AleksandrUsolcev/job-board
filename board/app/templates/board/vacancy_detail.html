@@ -26,16 +26,22 @@
         <span class="pe-4">руб.</span>
     {% endif %}
     {% if vacancy.min_exp or vacancy.max_exp %}
-      <span>Опыт </span>
+      <span>опыт </span>
       {% if vacancy.min_exp %}
         от <span class="fw-bold">{{ vacancy.min_exp }}</span>
       {% endif %}
       {% if vacancy.max_exp %}
         до <span class="fw-bold">{{ vacancy.max_exp }}</span>
       {% endif %}
-      <span class="pe-4">лет</span>
+      <span class="pe-4">
+        {% if vacancy.min_exp == 1 and not vacancy.max_exp or vacancy.max_exp == 1 and not vacancy.min_exp %}
+          года
+        {% else %}
+          лет
+        {% endif %}
+      </span>
     {% endif %}
-    <span>Вакантных мест: <span class="fw-bold">{{ vacancy.quantity }}</span></span>
+    <span>вакантных мест: <span class="fw-bold">{{ vacancy.quantity }}</span></span>
   </p>
   <h3 class="py-3">Описание вакансии</h3>
   <p>{{ vacancy.description|brline|safe }}</p>

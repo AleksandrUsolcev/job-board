@@ -9,10 +9,13 @@
     <div class="container-fluid bg-primary">
       <div class="container">
         <div class="row py-4">
-          <div class="col-6">
+          <div class="col-4 col-lg-3">
             <a href="{{ url_for('index') }}" class="text-decoration-none"><h1 class="logo fw-bold text-white">Job Board</h1></a>
           </div>
-          <div class="col-6 d-flex align-items-center flex-row-reverse text-white">
+          <div class="col-4 col-lg-6 d-flex align-items-center">
+            <input type="search" class="form-control" placeholder="Поиск вакансий">
+          </div>
+          <div class="col-4 col-lg-3 d-flex align-items-center flex-row-reverse text-white">
             {% if current_user.is_anonymous %}
               <a href="{{ url_for('login') }}" class="fw-bold text-white text-decoration-none">Вход для персонала</a>
             {% else %}

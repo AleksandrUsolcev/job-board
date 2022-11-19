@@ -10,15 +10,15 @@
     <a class="btn btn-success" href="{{ url_for('vacancy_add', category=category_url) }}">Добавить вакансию</a>
   </div>
   {% endif %}
-  <h4 class="py-3">
-    {% if category.vacancies.count() > 0 %}
+  {% if category.vacancies.count() > 0 %}
+    <p class="py-3 fs-5">
       <span class="pe-5">Вакансий: <span class="fw-bold">{{ category.vacancies.count() }}</span></span>
       {% if category.vacancies_quantity %}
         <span>Мест: <span class="fw-bold">{{ category.vacancies_quantity }}</span></span>
       {% endif %}
-    {% endif %}
-  </h4>
-  <h4>{{ category.description }}</h4>
+    </p>
+  {% endif %}
+  <p class="py-3 fs-5">{{ category.description }}</p>
   <div>
     {% for vacancy in category.vacancies.all() %}
       <div class="bg-light shadow p-4 my-5 row">
@@ -34,7 +34,7 @@
                 {% endif %}
                 <span class="pe-4">руб.</span>
             {% endif %}
-            <span>Вакантных мест: <span class="fw-bold">{{ vacancy.quantity }}</span></span>
+            <span>вакантных мест: <span class="fw-bold">{{ vacancy.quantity }}</span></span>
           </p>
           <p>{{ vacancy.description[:240] }}{% if vacancy.description|length >= 240 %}...{% endif %}</p>
         </div>
