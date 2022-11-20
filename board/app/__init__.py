@@ -1,6 +1,5 @@
 import datetime
 
-from app.admin import admin
 from flask import Flask
 from flask_login import LoginManager
 from flask_migrate import Migrate
@@ -9,7 +8,6 @@ from flask_sqlalchemy import SQLAlchemy
 from .config import Config
 
 app = Flask(__name__)
-app.register_blueprint(admin, url_prefix='/admin')
 
 app.config.from_object(Config)
 app.permanent_session_lifetime = datetime.timedelta(days=14)

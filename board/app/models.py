@@ -78,6 +78,7 @@ class Candidate(db.Model):
     email = db.Column(db.String(200), nullable=False)
     telegram = db.Column(db.String(200), nullable=False)
     comment = db.Column(db.Text())
+    created = db.Column(db.DateTime, default=datetime.utcnow)
     vacancy_id = db.Column(
         db.Integer, db.ForeignKey('vacancies.id'),
         nullable=False)
