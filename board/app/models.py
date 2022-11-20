@@ -62,8 +62,9 @@ class Vacancy(db.Model):
     category_id = db.Column(
         db.Integer, db.ForeignKey('categories.id'),
         nullable=False)
-    
-    candidates = db.relationship('Candidate', backref='vacancy', lazy='dynamic')
+
+    candidates = db.relationship(
+        'Candidate', backref='vacancy', lazy='dynamic')
 
     def __repr__(self):
         return f'<Vacancy {self.name}>'
@@ -72,8 +73,10 @@ class Vacancy(db.Model):
 class Candidate(db.Model):
     __tablename__ = 'candidates'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(200), nullable=False)
+    first_name = db.Column(db.String(200), nullable=False)
+    last_name = db.Column(db.String(200), nullable=False)
     email = db.Column(db.String(200), nullable=False)
+    telegram = db.Column(db.String(200), nullable=False)
     comment = db.Column(db.Text())
     vacancy_id = db.Column(
         db.Integer, db.ForeignKey('vacancies.id'),

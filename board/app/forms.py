@@ -147,3 +147,29 @@ class VacancyForm(FlaskForm):
         error = 'Минимальное значение не должно превышать максимальное'
         if max_salary and field.data >= max_salary:
             raise ValidationError(error)
+
+
+class RespondForm(FlaskForm):
+    first_name = StringField(
+        'Имя',
+        validators=[DataRequired('Обязательное поле')]
+    )
+    last_name = StringField(
+        'Фамилия',
+        validators=[DataRequired('Обязательное поле')]
+    )
+    email = EmailField(
+        'Электронная почта',
+        validators=[
+            DataRequired('Обязательное поле'),
+            Email('Неверный формат почты')
+        ]
+    )
+    telegram = StringField(
+        'Имя пользователя telegram (при наличии)',
+        validators=[Optional()]
+    )
+    comment = TextAreaField(
+        'Дополнительная информация',
+        validators=[Optional()]
+    )

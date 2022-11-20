@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}
+  Откликнуться на вакансию
+{% endblock %}
+{% block content %}
+  <h1 class="pb-4">
+    Откликнуться на вакансию
+  </h1>
+  <div class="col-lg-6 col-md-12">
+    <form action="" method="post" novalidate>
+      <div class="row">
+        {% for item in form %}
+          <div class="{% if item.id in ['first_name', 'last_name', 'email', 'telegram'] %}col-6{% endif %}">
+            {{ item(class_='form-control') }}
+            {% if item.id not in ['csrf_token', 'id'] %}
+              {{ item.label(class_='form-text pb-4') }}
+            {% endif %}
+            {% if item.errors %}
+              <div class="alert alert-danger">
+                {% for error in item.errors %}
+                  <p class="p-0 m-0">{{ error }}</p>
+                {% endfor %}
+              </div>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+      <button class="btn btn-primary" type="submit">
+        Отправить
+      </button>
+    </form>
+  </div>
+{% endblock %}

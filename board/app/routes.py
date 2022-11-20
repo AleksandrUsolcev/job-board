@@ -5,8 +5,8 @@ from slugify import slugify
 from sqlalchemy import func
 from werkzeug.urls import url_parse
 
-from .forms import CategoryForm, LoginForm, VacancyForm
-from .models import Category, User, Vacancy
+from .forms import CategoryForm, LoginForm, RespondForm, VacancyForm
+from .models import Candidate, Category, User, Vacancy
 
 
 @app.errorhandler(404)
@@ -205,3 +205,40 @@ def vacancy_detail(category, vacancy):
         'vacancy_url': vacancy_url,
     }
     return render_template('board/vacancy_detail.html', **context)
+
+
+@app.route('/job/<category>/<vacancy>/respond', methods=['GET', 'POST'])
+def vacancy_respond(category, vacancy):
+    category_url = category
+    vacancy_url = vacancy
+    vacancy = Vacancy.query.filter_by(slug=vacancy).first()
+    if not vacancy:
+        abort(404)
+    category = Category.query.filter_by(id=vacancy.category_id).first()
+    if category.slug != category_url.lower():
+        abort(404)
+    form = RespondForm()
+    if form.validate_on_submit():
+        data = form.data
+        data.pop('csrf_token', None)
+        candidate = Candidate(
+            vacancy_id=vacancy.id,
+            **data
+        )
+        db.session.add(candidate)
+        db.session.commit()
+        return redirect(
+            url_for(
+                'vacancy_detail',
+                category=category_url,
+                vacancy=vacancy_url
+            ), 301
+        )
+    context = {
+        'category': category,
+        'vacancy': vacancy,
+        'form': form,
+        'category_url': category_url,
+        'vacancy_url': vacancy_url
+    }
+    return render_template('board/vacancy_respond.html', **context)
