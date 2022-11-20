@@ -7,14 +7,17 @@
   {% endif %}
 {% endblock %}
 {% block content %}
-  <h1 class="pb-4">
-    {% if is_edit %}
-      Редактировать вакансию
-    {% else %}
-      Добавить вакансию
-    {% endif %}
-  </h1>
-  <div class="col-lg-6 col-md-12">
+<div class="row">
+  {% if is_edit %}
+  <a href="{{ url_for('category_detail', category=category_url) }}" class="text-decoration-none fs-5 fw-bold">{{ category.name }}</a>
+  <a href="{{ url_for('vacancy_detail', category=category_url, vacancy=vacancy_url) }}" class="text-decoration-none"><h1>{{ vacancy.name }}</h1></a>
+  <h4 class="pb-4 py-3">
+    Редактировать вакансию
+  </h4>
+  {% else %}
+  <h1>Добавить вакансию</h1>
+  {% endif %}
+  <div class="col-lg-6 col-md-12 py-3">
     <form action="" method="post" novalidate>
       <div class="row">
         {% for item in form %}
@@ -46,4 +49,10 @@
       </button>
     </form>
   </div>
+  {% if is_edit %}
+    <div class="col-lg-6 col-md-12 text-muted">
+      {% include 'board/includes/vacancy.html' %}
+    </div>
+  {% endif %}
+</div>
 {% endblock %}

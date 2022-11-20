@@ -3,10 +3,13 @@
   Откликнуться на вакансию
 {% endblock %}
 {% block content %}
-  <h1 class="pb-4">
+<div class="row">
+  <a href="{{ url_for('category_detail', category=category_url) }}" class="text-decoration-none fs-5 fw-bold">{{ category.name }}</a>
+  <a href="{{ url_for('vacancy_detail', category=category_url, vacancy=vacancy_url) }}" class="text-decoration-none"><h1>{{ vacancy.name }}</h1></a>
+  <h4 class="pb-4 py-3">
     Откликнуться на вакансию
-  </h1>
-  <div class="col-lg-6 col-md-12">
+  </h4>
+  <div class="col-lg-6 col-md-12 py-3">
     <form action="" method="post" novalidate>
       <div class="row">
         {% for item in form %}
@@ -30,4 +33,8 @@
       </button>
     </form>
   </div>
+  <div class="col-lg-6 col-md-12 text-muted">
+    {% include 'board/includes/vacancy.html' %}
+  </div>
+</div>
 {% endblock %}

@@ -12,39 +12,8 @@
   {% endif %}
   {% if vacancy.quantity > 0 and current_user.is_anonymous %}
   <div class="py-2">
-    <a href="" class="btn btn-primary me-4">Откликнуться</a>
+    <a href="{{ url_for('vacancy_respond', category=category_url, vacancy=vacancy_url) }}" class="btn btn-primary me-4">Откликнуться</a>
   </div>
   {% endif %}
-  <p class="pt-3 fs-5">
-    {% if vacancy.max_salary or vacancy.min_salary %}
-        {% if vacancy.min_salary %}
-          от <span class="fw-bold">{{ "{:,}".format(vacancy.min_salary).replace(',', ' ') }}</span>
-        {% endif %}
-        {% if vacancy.max_salary %}
-          до <span class="fw-bold">{{ "{:,}".format(vacancy.max_salary).replace(',', ' ') }}</span>
-        {% endif %}
-        <span class="pe-4">руб.</span>
-    {% endif %}
-    {% if vacancy.min_exp or vacancy.max_exp %}
-      <span>опыт </span>
-      {% if vacancy.min_exp %}
-        от <span class="fw-bold">{{ vacancy.min_exp }}</span>
-      {% endif %}
-      {% if vacancy.max_exp %}
-        до <span class="fw-bold">{{ vacancy.max_exp }}</span>
-      {% endif %}
-      <span class="pe-4">
-        {% if vacancy.min_exp == 1 and not vacancy.max_exp or vacancy.max_exp == 1 and not vacancy.min_exp %}
-          года
-        {% else %}
-          лет
-        {% endif %}
-      </span>
-    {% endif %}
-    <span>вакантных мест: <span class="fw-bold">{{ vacancy.quantity }}</span></span>
-  </p>
-  <h3 class="py-3">Описание вакансии</h3>
-  <p>{{ vacancy.description|brline|safe }}</p>
-  <h3 class="py-3">Требования к кандидату</h3>
-  <p>{{ vacancy.requirements|brline|safe }}</p>
+  {% include 'board/includes/vacancy.html' %}
 {% endblock %}

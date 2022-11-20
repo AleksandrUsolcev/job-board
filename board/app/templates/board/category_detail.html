@@ -40,7 +40,7 @@
         </div>
         {% if vacancy.quantity > 0 and current_user.is_anonymous %}
           <div class="col-3 d-flex align-items-center flex-row-reverse">
-            <a href="" class="btn btn-primary">Откликнуться</a>
+            <a href="{{ url_for('vacancy_respond', category=category_url, vacancy=vacancy.slug) }}" class="btn btn-primary">Откликнуться</a>
           </div>
         {% elif current_user.is_authenticated %}
           <div class="col-3 d-flex align-items-center flex-row-reverse">
