@@ -62,13 +62,15 @@ class Vacancy(db.Model):
     category_id = db.Column(
         db.Integer, db.ForeignKey('categories.id'),
         nullable=False)
+    
+    candidates = db.relationship('Candidate', backref='vacancy', lazy='dynamic')
 
     def __repr__(self):
         return f'<Vacancy {self.name}>'
 
 
-class Response(db.Model):
-    __tablename__ = 'responses'
+class Candidate(db.Model):
+    __tablename__ = 'candidates'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(200), nullable=False)
     email = db.Column(db.String(200), nullable=False)
@@ -78,7 +80,7 @@ class Response(db.Model):
         nullable=False)
 
     def __repr__(self):
-        return f'<Responses {self.name}>'
+        return f'<Candidate {self.name}>'
 
 
 @login.user_loader

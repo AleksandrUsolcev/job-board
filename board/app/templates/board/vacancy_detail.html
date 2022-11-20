@@ -18,10 +18,10 @@
   <p class="pt-3 fs-5">
     {% if vacancy.max_salary or vacancy.min_salary %}
         {% if vacancy.min_salary %}
-          от <span class="fw-bold">{{ "{:,}".format(vacancy.min_salary) }}</span>
+          от <span class="fw-bold">{{ "{:,}".format(vacancy.min_salary).replace(',', ' ') }}</span>
         {% endif %}
         {% if vacancy.max_salary %}
-          до <span class="fw-bold">{{ "{:,}".format(vacancy.max_salary) }}</span>
+          до <span class="fw-bold">{{ "{:,}".format(vacancy.max_salary).replace(',', ' ') }}</span>
         {% endif %}
         <span class="pe-4">руб.</span>
     {% endif %}
