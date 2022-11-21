@@ -31,9 +31,22 @@
   </div>
   <div class="col-lg-3 col-md-12 py-3">
     <h2>Направления</h2>
-    {% for category in categories %}
-      <p><a href="{{ url_for('category_detail', category=category.slug) }}">{{ category.name }}</a></p>
-    {% endfor %}
+    <a class="btn btn-primary my-3 me-4" href="{{ url_for('category_add') }}">Добавить</a>
+      <div class="row">
+        {% for category in categories %}
+          <div class="col-lg-12 col-md-4 ">
+            <p class="mb-0"><a href="{{ url_for('category_detail', category=category.slug) }}" class="text-decoration-none fs-5">{{ category.name }}</a></p>
+            <p class="mb-2">
+              {% if category.vacancies.count() > 0 %}
+              <span class="pe-2">Вакансий: {{ category.vacancies.count() }}</span>
+              {% if category.vacancies_quantity %}
+                <span>Мест: {{ category.vacancies_quantity }}</span>
+              {% endif %}
+            {% endif %}
+            </p>
+          </div>
+        {% endfor %}
+    </div>
   </div>
 </div>
 {% endblock %}
